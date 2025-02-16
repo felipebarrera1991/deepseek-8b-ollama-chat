@@ -1,40 +1,40 @@
 import streamlit as st
 from langchain_ollama import ChatOllama
 
-# Configurar LLM
+# Configure LLM
 llm = ChatOllama(
     model="deepseek-r1:8B", 
     base_url='http://localhost:11434'
 )
 
-# Configurar Streamlit
-st.set_page_config(page_title="Chat DeepSeek", layout="centered")
-st.title("Converse com o DeepSeek!")
+# Configure Streamlit
+st.set_page_config(page_title="DeepSeek Chat", layout="centered")
+st.title("Chat with DeepSeek!")
 
-# Criar histórico de mensagens
-if "mensagens" not in st.session_state:
-    st.session_state['mensagens'] = []
-mensagens = st.session_state['mensagens']
+# Create message history
+if "messages" not in st.session_state:
+    st.session_state['messages'] = []
+messages = st.session_state['messages']
 
-# Exibir mensagens anteriores
-for tipo, conteudo in mensagens:
-    chat = st.chat_message(tipo)
-    chat.markdown(conteudo)
+# Display previous messages
+for msg_type, content in messages:
+    chat = st.chat_message(msg_type)
+    chat.markdown(content)
 
-# Pegar entrada do usuário
-prompt = st.chat_input('Mande sua mensagem para o DeepSeek...')
+# Get user input
+prompt = st.chat_input('Send your message to DeepSeek...')
 
 if prompt:
-    mensagens.append(('human', prompt))
+    messages.append(('human', prompt))
 
-    # Exibir pergunta do usuário
+    # Display user's question
     chat = st.chat_message('human')
     chat.markdown(prompt)
 
-    # Gerar resposta da IA
-    resposta = llm.invoke(mensagens).content
-    mensagens.append(('ai', resposta))
+    # Generate AI response
+    response = llm.invoke(messages).content
+    messages.append(('ai', response))
 
-    # Exibir resposta da IA
+    # Display AI response
     chat = st.chat_message('ai')
-    chat.markdown(resposta)
+    chat.markdown(response)
